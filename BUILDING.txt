@@ -1,0 +1,31 @@
+BUILDING
+--------
+The following development systems have been tested.
+For v1.4, only standalone component has been tested (not linked with application).
+
+					Apple PB/Xcode	MPW		Metrowerks CW 7		CW8		MS VS6
+
+OS X (Mach-O)		YES				-		NO**				??		-
+Carbon CFM (OS X/9)	-				YES***	YES***				YES		-
+OS 9 				-				YES		YES	(code rsrc)		YES		-
+Mac 68K 			-				NO		YES	(code rsrc)		YES		-
+Windows 			-				-		NO*					NO*		YES
+
+Project files are Xcode/EIComponent.pbproj, MPW makefile EIComponent.make,
+EIComponent_cw7.mcp, EIComponent_cw8.mcp and EIComponentSample.dsw respectively.
+
+To build the component for Windows, the QuickTime Windows SDK is required:
+ftp://ftp.apple.com/developer/Development_Kits/QT6SDK_Win.hqx
+The Visual Studio project expects the QTDevWin folder to be installed in root of C:\
+
+For more details, see Apple's ReadMe.rtf in the top level of this source distribution.
+
+Questions and feedback about building this component to support@telegraphics.com.au
+
+
+Notes
+* Can build DLL but adding necessary resources needs Rez and RezWack functionality. Project is not complete.
+
+** CW8 should be able to build the Mach-O plugin as in v1.3, but not tested with 1.4 project.
+
+*** Carbon CFM versions build OK but do not seem to work yet. Project is not complete.

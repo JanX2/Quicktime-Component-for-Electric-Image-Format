@@ -1,0 +1,36 @@
+#include "winver.h"
+
+#include "EI_IDs.h"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION	VI_VERS_NUM
+ PRODUCTVERSION	VI_VERS_NUM
+ FILEFLAGSMASK	0x3fL
+ FILEFLAGS		VI_FLAGS
+ FILEOS			VOS__WINDOWS32
+ FILETYPE		VFT_DLL
+ FILESUBTYPE	VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "04090000"
+        BEGIN
+            VALUE "Comments",			VI_COMMENTS
+            VALUE "CompanyName",		"Telegraphics Pty Ltd, www.telegraphics.com.au\0"
+            VALUE "FileDescription",	"Electric Image Component for QuickTime(TM)\0"
+            VALUE "FileVersion",		kEI_VersionShort "\0"
+            /*VALUE "InternalName",		"ElectricImage\0"*/
+            VALUE "LegalCopyright",		"Original code Copyright (C) 1999-2003 Apple Computer, Inc.\0"
+            /*VALUE "LegalTrademarks",	"\0"*/
+            VALUE "OriginalFilename",	"ElectricImage.qtx\0"
+            /*VALUE "PrivateBuild",		"\0"*/
+            VALUE "ProductName",		"Electric Image (EIAS) Component\0"
+            VALUE "ProductVersion",		kEI_VersionShort "\0"
+            /*VALUE "SpecialBuild",		"\0"*/
+        END
+    END
+    BLOCK "VarFileInfo" /* see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wcesdkr/html/_tools_VarFileInfo_Block.asp */
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END
