@@ -20,6 +20,13 @@ The Visual Studio project expects the QTDevWin folder to be installed in root of
 
 For more details, see Apple's ReadMe.rtf in the top level of this source distribution.
 
+MPW NOTE
+--------
+Before attempting to build in MPW in OS X Classic, you must make sure the MacOS file type is 'TEXT' on all source files; in the 'eicomponent' trunk directory, execute this command:
+    setfile -t TEXT Å.[chr] :Å:Å.[chr] Å.make
+(that wildcard character is option-X).
+--------
+
 Questions and feedback about building this component to support@telegraphics.com.au
 
 
