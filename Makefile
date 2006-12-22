@@ -1,25 +1,27 @@
 # GNU Makefile for Universal Binary QT Component
 
-# FIXME: currently only builds a single-arch (not fat) Mach-O component.
-
 # toby@telegraphics.com.au, 21 Dec 2006
 # See: http://developer.apple.com/technotes/tn/tn2012.html
 
 BUNDLE = EIComponentUB.component
 BUNDLEEXEC = ElectricImage
-COMPDYLIB  = $(BUNDLE)/Contents/MacOS/$(BUNDLEEXEC)
-COMPRSRC = $(BUNDLE)/Contents/Resources/$(BUNDLEEXEC).rsrc
+FATBIN  = $(BUNDLE)/Contents/MacOS/$(BUNDLEEXEC)
+RSRC = $(BUNDLE)/Contents/Resources/$(BUNDLEEXEC).rsrc
 
-CFLAGS = -O2 -Wall -Wextra
+# See: http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html#//apple_ref/doc/uid/TP40002850-BAJCFEBA
+CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
+LDFLAGS = -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
+
 CPPFLAGS = -I. -IEI_FormatIncludes -IUtilities \
 	-IEI_GraphicsImport -IEI_GraphicsExport -IEI_ImageCodec \
 	-IEI_MovieImport -IEI_MovieExport
+CFLAGS += -O2 -Wall -Wextra -Wno-parentheses
 
 REZFLAGS = -i . \
 	-d TARGET_REZ_MAC_68K=0 \
 	-d TARGET_REZ_MAC_PPC=0 \
 	-d TARGET_REZ_CARBON_CFM=0 \
-	-d TARGET_REZ_CARBON_MACHO=0 \
+	-d TARGET_REZ_CARBON_MACHO=1 \
 	-d TARGET_REZ_CARBON_MACHO_X86=1 \
 	-d TARGET_REZ_WIN32=0 \
 	-d thng_RezTemplateVersion=2
@@ -40,11 +42,11 @@ OBJ = \
 	EI_MovieImport/EI_MovieImport.o \
 	Utilities/EI_MakeImageDescription.o
 
-$(COMPDYLIB) : ExportsPB.exp $(OBJ) $(BUNDLE) $(COMPRSRC) $(BUNDLE)/Contents/Info.plist
+$(FATBIN) : ExportsPB.exp $(OBJ) $(BUNDLE) $(RSRC) $(BUNDLE)/Contents/Info.plist
 	mkdir -p $(dir $@)
-	$(CC) -bundle -o $@ $(OBJ) -exported_symbols_list ExportsPB.exp \
+	$(CC) -bundle -o $@ $(OBJ) $(LDFLAGS) -exported_symbols_list ExportsPB.exp \
 		-framework Carbon -framework CoreServices -framework QuickTime
-	ls -l $@
+	lipo -detailed_info $@
 
 $(BUNDLE) : ; mkdir $@ && /Developer/Tools/SetFile -a B $@
 
@@ -52,7 +54,7 @@ $(BUNDLE)/Contents/Info.plist : Info.plist.in EI_IDs.h
 	V=`sed -n -E 's/^.*kEI_VersionShort[[:blank:]]+\"([^"]*)\"/\1/p' EI_IDs.h` ;\
 		sed -e s/VERSION_STR/$$V/ $< > $@
 
-$(COMPRSRC) : $(REZFILES) EI_IDs.h
+$(RSRC) : $(REZFILES) EI_IDs.h
 	mkdir -p $(dir $@)
 	/Developer/Tools/Rez -o $@ -useDF $(filter %.r,$^) \
 		-i /Developer/Headers/FlatCarbon $(REZFLAGS)
