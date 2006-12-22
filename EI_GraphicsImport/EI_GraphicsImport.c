@@ -190,7 +190,7 @@ PASCAL_RTN ComponentResult EI_GraphicsImportGetImageDescription(EI_GraphicsImpor
 	// framePalettes contains the number of entries in the color table
 	colorCount = EndianU16_BtoN(frame.framePalettes);
 
-	// Alocate some storage for the color table and get it
+	// Allocate some storage for the color table and get it
 	colors = NewPtr(3 * colorCount);
 	if (err = MemError()) goto bail;
 

@@ -152,7 +152,8 @@ bail:
 // Component Close Request - Required
 PASCAL_RTN ComponentResult EI_ImageCodecClose(EI_Globals glob, ComponentInstance self)
 {
-	// Make sure to close the base component and dealocate our storage
+#pragma unused(self)
+	// Make sure to close the base component and deallocate our storage
 	if (glob) {
 		if (glob->delegateComponent) {
 			CloseComponent(glob->delegateComponent);

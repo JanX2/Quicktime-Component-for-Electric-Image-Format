@@ -11,6 +11,7 @@ VERSION HISTORY
 01-May-2004:       - source release to EI, with fixed VS6 build settings
 27-Feb-2005: 1.4b6 - public source release
 28-Feb-2005: 1.4b7 - fix Manufacturer field in MovieExport - should be 'appl'
+21-Dec-2006: 1.5b1 - Universal (PPC/Intel) version
 */
 
 /*	Code resource IDs, when building for PPC (not CFM).
@@ -23,17 +24,17 @@ VERSION HISTORY
 #define kEI_ImageCodecID		0x0500
 
 /* software version */
-#define kEI_VersionShort		"1.4b7"
-#define kEI_VersionNum			1,0x40,beta,7 // used in 'vers' resource
-#define kEI_VersionHex			0x1407
+#define kEI_VersionShort		"1.5b1"
+#define kEI_VersionNum			1,0x50,beta,1 // used in 'vers' resource
+#define kEI_VersionHex			0x1501
 /* remember to update Xcode/Project Builder project settings, too! */
 
 /* formatted for Win32 VERSIONINFO resource */
-#define VI_VERS_NUM 1,4,0,7
+#define VI_VERS_NUM 1,5,0,1
 #ifdef _DEBUG
-#define VI_FLAGS	VS_FF_PRERELEASE|VS_FF_DEBUG
+	#define VI_FLAGS	VS_FF_PRERELEASE|VS_FF_DEBUG
 #else
-#define VI_FLAGS	VS_FF_PRERELEASE /* 0 for final, or any of VS_FF_DEBUG,VS_FF_PATCHED,VS_FF_PRERELEASE,VS_FF_PRIVATEBUILD,VS_FF_SPECIALBUILD */
+	#define VI_FLAGS	VS_FF_PRERELEASE /* 0 for final, or any of VS_FF_DEBUG,VS_FF_PATCHED,VS_FF_PRERELEASE,VS_FF_PRIVATEBUILD,VS_FF_SPECIALBUILD */
 #endif
 #define VI_COMMENTS	"Electric Image (EIAS) Component originally written by Apple. Large file support and other enhancements by Telegraphics Pty Ltd.\r\n\r\nPlease contact support@telegraphics.com.au with any bug reports, suggestions or comments.\0"	/* null terminated Comments field */
 

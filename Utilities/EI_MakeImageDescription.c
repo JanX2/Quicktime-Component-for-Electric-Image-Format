@@ -64,7 +64,7 @@ OSErr EI_MakeImageDescription(ImageFramePtr frame, long colorCount, UInt8 *color
 	CTabHandle colors = NULL;
 
 	desc = (ImageDescriptionHandle)NewHandleClear(sizeof(ImageDescription));
-	if (err = MemError()) goto bail;
+	if ( (err = MemError()) ) goto bail;
 
 	idp = *desc;
 	idp->idSize = sizeof(ImageDescription);					// total size of this image description structure with extra data including color lookup tables and other per sequence data
@@ -83,7 +83,7 @@ OSErr EI_MakeImageDescription(ImageFramePtr frame, long colorCount, UInt8 *color
 		int i;
 
 		colors = (CTabHandle)NewHandleClear(sizeof(ColorTable) + colorCount * sizeof(ColorSpec));
-		if (err = MemError()) goto bail;
+		if ( (err = MemError()) ) goto bail;
 
 		(**colors).ctFlags = 0;
 		(**colors).ctSeed = GetCTSeed();

@@ -1,38 +1,62 @@
-ASSETS = BUILDING.txt \
-	Dllmain.c \
-	EIComponent.make \
-	EIComponentBundle.plc \
-	EIComponentSample.def \
-	EIComponentSample.dsp \
-	EIComponentSample.dsw \
-	EIComponent_cw7.mcp \
-	EIComponent_cw8.mcp \
-	EIComponent_vers.r \
-	EI_FormatIncludes \
-	EI_GraphicsExport/*.[chr] \
-	EI_GraphicsImport/*.[chr] \
-	EI_IDs.h \
-	EI_ImageCodec/*.[chr] \
-	EI_MovieExport/*.[chr] \
-	EI_MovieImport/*.[chr] \
-	Exports.exp \
-	ExportsPB.exp \
-	ImportExample.plc \
-	ImportExampleTest.c \
-	Makefile \
-	PrefixIncludes \
-	Utilities \
-	Xcode/EIComponent.pbproj \
-	cw7 \
-	cw8 \
-	mpw \
-	Release/*.txt \
-	plist_carb.r \
-	version.rc
+# GNU Makefile for Universal Binary QT Component
 
-src : QT-EI-src.zip
+# FIXME: currently only builds a single-arch (not fat) Mach-O component.
 
-QT-EI-src.zip : $(ASSETS)
-	rm -f cw[78]/* mpw/*
-	zip -9 -r $@ $^ -x `find . -name .DS_Store|cut -c 3-`
+# toby@telegraphics.com.au, 21 Dec 2006
+# See: http://developer.apple.com/technotes/tn/tn2012.html
 
+BUNDLE = EIComponentUB.component
+BUNDLEEXEC = ElectricImage
+COMPDYLIB  = $(BUNDLE)/Contents/MacOS/$(BUNDLEEXEC)
+COMPRSRC = $(BUNDLE)/Contents/Resources/$(BUNDLEEXEC).rsrc
+
+CFLAGS = -O2 -Wall -Wextra
+CPPFLAGS = -I. -IEI_FormatIncludes -IUtilities \
+	-IEI_GraphicsImport -IEI_GraphicsExport -IEI_ImageCodec \
+	-IEI_MovieImport -IEI_MovieExport
+
+REZFLAGS = -i . \
+	-d TARGET_REZ_MAC_68K=0 \
+	-d TARGET_REZ_MAC_PPC=0 \
+	-d TARGET_REZ_CARBON_CFM=0 \
+	-d TARGET_REZ_CARBON_MACHO=0 \
+	-d TARGET_REZ_CARBON_MACHO_X86=1 \
+	-d TARGET_REZ_WIN32=0 \
+	-d thng_RezTemplateVersion=2
+
+REZFILES = \
+	EI_GraphicsImport/EI_GraphicsImport.r \
+	EI_GraphicsExport/EI_GraphicsExport.r \
+	EI_ImageCodec/EI_ImageCodec.r \
+	EI_MovieExport/EI_MovieExport.r \
+	EI_MovieExport/EI_MovieExportDialog.r \
+	EI_MovieImport/EI_MovieImport.r
+
+OBJ = \
+	EI_GraphicsExport/EI_GraphicsExport.o \
+	EI_GraphicsImport/EI_GraphicsImport.o \
+	EI_ImageCodec/EI_ImageCodec.o \
+	EI_MovieExport/EI_MovieExport.o \
+	EI_MovieImport/EI_MovieImport.o \
+	Utilities/EI_MakeImageDescription.o
+
+$(COMPDYLIB) : ExportsPB.exp $(OBJ) $(BUNDLE) $(COMPRSRC) $(BUNDLE)/Contents/Info.plist
+	mkdir -p $(dir $@)
+	$(CC) -bundle -o $@ $(OBJ) -exported_symbols_list ExportsPB.exp \
+		-framework Carbon -framework CoreServices -framework QuickTime
+	ls -l $@
+
+$(BUNDLE) : ; mkdir $@ && /Developer/Tools/SetFile -a B $@
+
+$(BUNDLE)/Contents/Info.plist : Info.plist.in EI_IDs.h
+	V=`sed -n -E 's/^.*kEI_VersionShort[[:blank:]]+\"([^"]*)\"/\1/p' EI_IDs.h` ;\
+		sed -e s/VERSION_STR/$$V/ $< > $@
+
+$(COMPRSRC) : $(REZFILES) EI_IDs.h
+	mkdir -p $(dir $@)
+	/Developer/Tools/Rez -o $@ -useDF $(filter %.r,$^) \
+		-i /Developer/Headers/FlatCarbon $(REZFLAGS)
+	ls -l $@
+
+clean :
+	rm -fr $(BUNDLE) $(OBJ)

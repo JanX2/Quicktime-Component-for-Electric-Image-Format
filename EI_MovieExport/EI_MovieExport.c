@@ -395,7 +395,7 @@ bail:
 // flag in their component flags. 
 PASCAL_RTN ComponentResult EI_MovieExportFromProceduresToDataRef(EI_MovieExportGlobals store, Handle dataRef, OSType dataRefType)
 {
-	OutputTrackPtr	outputTrack;
+	OutputTrackPtr	outputTrack = store->outputTrack;
 	UInt64			offset;
 	ImageHeader		imgHeader;
 	long			numOfFrames = 0;
@@ -426,8 +426,7 @@ PASCAL_RTN ComponentResult EI_MovieExportFromProceduresToDataRef(EI_MovieExportG
 	err = DataHOpenForWrite(dataH);
 	if (err) goto bail;
 
-	// If we have an outputTrack added in the MovieExportAddDataSource call, write some frames
-	outputTrack = store->outputTrack;	
+	// If we have an outputTrack added in the MovieExportAddDataSource call, write some frames	
 	if (outputTrack) {
 		// Since the property proc we call may be a proc returned from MovieExportNewGetDataAndPropertiesProcs,
 		// configure the QT movie exporter so that it's properties match what we have as our defaults.

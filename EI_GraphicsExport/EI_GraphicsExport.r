@@ -64,10 +64,6 @@
 #if TARGET_REZ_CARBON_MACHO
     #include <Carbon/Carbon.r>
     #include <QuickTime/QuickTime.r>
-	#undef __CARBON_R__
-	#undef __CORESERVICES_R__
-	#undef __CARBONCORE_R__
-	#undef __COMPONENTS_R__
 #else
     #include "ConditionalMacros.r"
     #include "MacTypes.r"
@@ -75,7 +71,6 @@
     #include "QuickTimeComponents.r"
     #include "ImageCompression.r"
     #include "CodeFragments.r"
-	#undef __COMPONENTS_R__
 #endif
 
 #include "EI_IDs.h"
@@ -105,29 +100,36 @@ resource 'thng' (kEI_GraphicsExportID,"EI Graphics Export",locked) {
 	{
 #if TARGET_OS_MAC							// COMPONENT PLATFORM INFORMATION ----------------------
 	#if TARGET_REZ_CARBON_CFM
-		kEI_GraphicsExportFlags,			// Component Flags 
+		kEI_GraphicsExportFlags,				// Component Flags
 		'cfrg',								// Special Case: data-fork based code fragment
 		kEI_GraphicsExportID, /* Code ID usage for CFM components:
-								0 (kCFragResourceID) - This means the first member in the code fragment;
-									Should only be used when building a single component per file. When doing so
-									using kCFragResourceID simplifies things because a custom 'cfrg' resource is not required
-								n - This value must match the special 'cpnt' qualifier 1 in the custom 'cfrg' resource */
+							0 (kCFragResourceID) - This means the first member in the code fragment;
+								Should only be used when building a single component per file. When doing so
+								using kCFragResourceID simplifies things because a custom 'cfrg' resource is not required
+							n - This value must match the special 'cpnt' qualifier 1 in the custom 'cfrg' resource */
 		platformPowerPCNativeEntryPoint,	// Platform Type (response from gestaltComponentPlatform or failing that, gestaltSysArchitecture)
-	#elif TARGET_REZ_CARBON_MACHO
-		kEI_GraphicsExportFlags,
+	#endif
+	#if TARGET_REZ_CARBON_MACHO
+		kEI_GraphicsExportFlags, 
 		'dlle',								// Code Resource type - Entry point found by symbol name 'dlle' resource
-		kEI_GraphicsExportID,				// ID of 'dlle' resource
+		kEI_GraphicsExportID,					// ID of 'dlle' resource
 		platformPowerPCNativeEntryPoint,
-	#elif TARGET_REZ_MAC_PPC
-		kEI_GraphicsExportFlags,
-		'grex', kEI_GraphicsExportID,		// Code ID
+	#endif
+	#if TARGET_REZ_CARBON_MACHO_X86
+		kEI_GraphicsExportFlags, 
+		'dlle',
+		kEI_GraphicsExportID,
+		platformIA32NativeEntryPoint,
+	#endif
+	#if TARGET_REZ_MAC_PPC
+		kEI_GraphicsExportFlags, 
+		'grex', kEI_GraphicsExportID,			// Code ID
 		platformPowerPC,
-	#elif TARGET_REZ_MAC_68K
+	#endif
+	#if TARGET_REZ_MAC_68K
 		kEI_GraphicsExportFlags,
 		'grex', kEI_GraphicsExportID,
 		platform68k,
-	#else
-		#error "At least one TARGET_REZ_XXX_XXX platform must be defined."
 	#endif
 #endif
 #if TARGET_OS_WIN32
@@ -135,7 +137,8 @@ resource 'thng' (kEI_GraphicsExportID,"EI Graphics Export",locked) {
 	'dlle', kEI_GraphicsExportID,
 	platformWin32,
 #endif
-	}
+	},
+	'thnr', kEI_GraphicsExportID			// Component public resource identifier
 };
 
 resource 'STR ' (kEI_GraphicsExportID) {
@@ -194,7 +197,7 @@ resource 'cfrg' (0) {
 };
 #endif
 
-#if	TARGET_REZ_CARBON_MACHO || TARGET_REZ_WIN32
+#if	TARGET_REZ_CARBON_MACHO || TARGET_REZ_CARBON_MACHO_X86 || TARGET_REZ_WIN32
 // Code Entry Point for Mach-O and Windows
 	resource 'dlle' (kEI_GraphicsExportID) {
 		"EI_GraphicsExportComponentDispatch"
