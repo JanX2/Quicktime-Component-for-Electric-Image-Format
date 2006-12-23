@@ -12,7 +12,8 @@ VERSION HISTORY
 27-Feb-2005: 1.4b6 - public source release
 28-Feb-2005: 1.4b7 - fix Manufacturer field in MovieExport - should be 'appl'
 21-Dec-2006: 1.5b1 - Universal (PPC/Intel) version
-23-Dec-2006: 1.5b2 - fix resource compilation ('thng' templates)
+23-Dec-2006: 1.5b2 - fix resource compilation ('thng' templates);
+                     fix MovieExport UI (missing nib files)
 */
 
 /*	Code resource IDs, when building for PPC (not CFM).
