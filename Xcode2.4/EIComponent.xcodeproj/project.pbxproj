@@ -22,6 +22,12 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		DA18145B0B3DD81500054DC3 /* EI_RLE.c in Sources */ = {isa = PBXBuildFile; fileRef = DAB3F1310B3DD60F0022C67C /* EI_RLE.c */; };
+		DA1814770B3DD92900054DC3 /* EI_GraphicsImport.r in Rez */ = {isa = PBXBuildFile; fileRef = 67B1198A00DA904905000001 /* EI_GraphicsImport.r */; };
+		DA1814780B3DD92900054DC3 /* EI_GraphicsExport.r in Rez */ = {isa = PBXBuildFile; fileRef = 2BD9EB1E045514B300000102 /* EI_GraphicsExport.r */; };
+		DA1814790B3DD92900054DC3 /* EI_MovieImport.r in Rez */ = {isa = PBXBuildFile; fileRef = 67B1198C00DA904905000001 /* EI_MovieImport.r */; };
+		DA18147A0B3DD92900054DC3 /* EI_MovieExport.r in Rez */ = {isa = PBXBuildFile; fileRef = 2BEE4AEC0450A7E500CB1627 /* EI_MovieExport.r */; };
+		DA18147B0B3DD92900054DC3 /* EI_ImageCodec.r in Rez */ = {isa = PBXBuildFile; fileRef = DAEA999D0B3B422900CF21AB /* EI_ImageCodec.r */; };
 		DAB3F0EB0B3DD5430022C67C /* EI_GraphicsImportDispatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 67B119A800DA90B905000001 /* EI_GraphicsImportDispatch.h */; };
 		DAB3F0EC0B3DD5430022C67C /* EI_MovieImportDispatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 67B119B000DA914005000001 /* EI_MovieImportDispatch.h */; };
 		DAB3F0ED0B3DD5430022C67C /* EI_Image.h in Headers */ = {isa = PBXBuildFile; fileRef = 67B119B500DA914005000001 /* EI_Image.h */; };
@@ -55,8 +61,6 @@
 		DAB3F1190B3DD5430022C67C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67B119C800DA91B805000001 /* Carbon.framework */; };
 		DAB3F11A0B3DD5430022C67C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67B119C900DA91B805000001 /* QuickTime.framework */; };
 		DAB3F11B0B3DD5430022C67C /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D13F5D037DC13801000102 /* CoreServices.framework */; };
-		DAB3F11D0B3DD5430022C67C /* EI_ImageCodec.r in Rez */ = {isa = PBXBuildFile; fileRef = DAEA999D0B3B422900CF21AB /* EI_ImageCodec.r */; };
-		DAB3F11E0B3DD5430022C67C /* EIComponentUB.r in Rez */ = {isa = PBXBuildFile; fileRef = DAEA99BA0B3B42B700CF21AB /* EIComponentUB.r */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,14 +68,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 67B1196000DA8D7405000001 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = DAB3F0E90B3DD5430022C67C /* ImportExample (Upgraded) */;
+			remoteGlobalIDString = DAB3F0E90B3DD5430022C67C;
 			remoteInfo = "ImportExample (Upgraded)";
 		};
 		DAB3F1280B3DD5430022C67C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 67B1196000DA8D7405000001 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = DAB3F1060B3DD5430022C67C /* El Component Bundle (Upgraded) */;
+			remoteGlobalIDString = DAB3F1060B3DD5430022C67C;
 			remoteInfo = "El Component Bundle (Upgraded)";
 		};
 /* End PBXContainerItemProxy section */
@@ -99,9 +103,9 @@
 		67B119C800DA91B805000001 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		67B119C900DA91B805000001 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		DAB3F1030B3DD5430022C67C /* Info-ImportExample__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-ImportExample__Upgraded_.plist"; sourceTree = "<group>"; };
-		DAB3F1040B3DD5430022C67C /* ImportExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = ImportExample.app; path = build/Development/ImportExample.app; sourceTree = "<group>"; };
+		DAB3F1040B3DD5430022C67C /* ImportExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ImportExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAB3F1240B3DD5430022C67C /* Info-El_Component_Bundle__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-El_Component_Bundle__Upgraded_.plist"; sourceTree = "<group>"; };
-		DAB3F1250B3DD5430022C67C /* ElectricImage.qtx */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ElectricImage.qtx; path = build/Development/ElectricImage.qtx; sourceTree = "<group>"; };
+		DAB3F1250B3DD5430022C67C /* ElectricImage.qtx */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ElectricImage.qtx; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAB3F1310B3DD60F0022C67C /* EI_RLE.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = EI_RLE.c; path = ../Utilities/EI_RLE.c; sourceTree = SOURCE_ROOT; };
 		DAB3F1320B3DD60F0022C67C /* EI_RLE.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = EI_RLE.h; path = ../Utilities/EI_RLE.h; sourceTree = SOURCE_ROOT; };
 		DAEA999C0B3B422900CF21AB /* EI_ImageCodec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = EI_ImageCodec.c; path = ../EI_ImageCodec/EI_ImageCodec.c; sourceTree = SOURCE_ROOT; };
@@ -375,8 +379,11 @@
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAB3F11D0B3DD5430022C67C /* EI_ImageCodec.r in Rez */,
-				DAB3F11E0B3DD5430022C67C /* EIComponentUB.r in Rez */,
+				DA1814770B3DD92900054DC3 /* EI_GraphicsImport.r in Rez */,
+				DA1814780B3DD92900054DC3 /* EI_GraphicsExport.r in Rez */,
+				DA1814790B3DD92900054DC3 /* EI_MovieImport.r in Rez */,
+				DA18147A0B3DD92900054DC3 /* EI_MovieExport.r in Rez */,
+				DA18147B0B3DD92900054DC3 /* EI_ImageCodec.r in Rez */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +420,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA18145B0B3DD81500054DC3 /* EI_RLE.c in Sources */,
 				DAB3F1120B3DD5430022C67C /* EI_GraphicsImport.c in Sources */,
 				DAB3F1130B3DD5430022C67C /* EI_GraphicsExport.c in Sources */,
 				DAB3F1140B3DD5430022C67C /* EI_MovieImport.c in Sources */,
@@ -601,7 +609,7 @@
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-bundle";
-				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport";
+				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport -d TARGET_REZ_MAC_68K=0 -d TARGET_REZ_MAC_PPC=0 -d TARGET_REZ_CARBON_CFM=0 -d TARGET_REZ_CARBON_MACHO=1 -d TARGET_REZ_CARBON_MACHO_X86=1 -d TARGET_REZ_WIN32=0";
 				PRODUCT_NAME = ElectricImage;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -631,7 +639,7 @@
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-bundle";
-				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport";
+				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport -d TARGET_REZ_MAC_68K=0 -d TARGET_REZ_MAC_PPC=0 -d TARGET_REZ_CARBON_CFM=0 -d TARGET_REZ_CARBON_MACHO=1 -d TARGET_REZ_CARBON_MACHO_X86=1 -d TARGET_REZ_WIN32=0";
 				PRODUCT_NAME = "";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -657,7 +665,7 @@
 				INFOPLIST_FILE = "Info-El_Component_Bundle__Upgraded_.plist";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-bundle";
-				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport";
+				OTHER_REZFLAGS = "-rd -i ../EI_GraphicsExport -i ../EI_GraphicsImport -i ../EI_ImageCodec -i ../EI_MovieExport -i ../EI_MovieImport -d TARGET_REZ_MAC_68K=0 -d TARGET_REZ_MAC_PPC=0 -d TARGET_REZ_CARBON_CFM=0 -d TARGET_REZ_CARBON_MACHO=1 -d TARGET_REZ_CARBON_MACHO_X86=1 -d TARGET_REZ_WIN32=0";
 				PRODUCT_NAME = ElectricImage;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -673,11 +681,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH)";
-				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = EIComponent;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_INSTALLED_PRODUCT = NO;
-				WRAPPER_EXTENSION = qtx;
+				WRAPPER_EXTENSION = component;
 			};
 			name = Development;
 		};
@@ -688,18 +694,16 @@
 					ppc,
 					i386,
 				);
-				MACH_O_TYPE = mh_dylib;
-				PRODUCT_NAME = EIComponentUB;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				WRAPPER_EXTENSION = qtx;
+				PRODUCT_NAME = EIComponent;
+				WRAPPER_EXTENSION = component;
 			};
 			name = Deployment;
 		};
 		DAEA98330B3B3E9C00CF21AB /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACH_O_TYPE = mh_dylib;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				PRODUCT_NAME = EIComponent;
+				WRAPPER_EXTENSION = component;
 			};
 			name = Default;
 		};
