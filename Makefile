@@ -29,8 +29,7 @@ REZFLAGS = -i . \
 	-d TARGET_REZ_MAC_68K=0 \
 	-d TARGET_REZ_MAC_PPC=0 \
 	-d TARGET_REZ_CARBON_CFM=0 \
-	-d TARGET_REZ_WIN32=0 \
-	-d thng_RezTemplateVersion=2
+	-d TARGET_REZ_WIN32=0
 
 fat : REZFLAGS += -d TARGET_REZ_CARBON_MACHO=1 \
 				  -d TARGET_REZ_CARBON_MACHO_X86=1
@@ -74,7 +73,7 @@ $(RSRC) : $(REZFILES) EI_IDs.h
 	mkdir -p $(dir $@)
 	ARCHPPC=0; test `arch` == "ppc" && ARCHPPC=1; \
 	ARCHX86=0; test `arch` == "i386" && ARCHX86=1; \
-	/Developer/Tools/Rez -o $@ -useDF $(filter %.r,$^) \
+	/Developer/Tools/Rez -o $@ -rd -useDF $(filter %.r,$^) \
 		-i /Developer/Headers/FlatCarbon $(REZFLAGS)
 	ls -l $@
 

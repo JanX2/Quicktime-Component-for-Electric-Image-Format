@@ -1,38 +1,46 @@
 BUILDING
 --------
 The following development systems have been tested.
-For v1.4, only standalone component has been tested (not linked with application).
 
-					Apple PB/Xcode	MPW		Metrowerks CW 7		CW8		MS VS6
-
-OS X (Mach-O)		YES				-		NO**				??		-
-Carbon CFM (OS X/9)	-				YES***	YES***				YES		-
+					Apple PB/Xcode	MPW[4]	Metrowerks CW 7		CW8		MS VS6
+					or Makefile
+OS X (Mach-O)		YES, PPC+Intel	-		NO[2]				??		-
+Carbon CFM (OS X/9)	-				YES[3]	YES[3]				YES		-
 OS 9 				-				YES		YES	(code rsrc)		YES		-
 Mac 68K 			-				NO		YES	(code rsrc)		YES		-
-Windows 			-				-		NO*					NO*		YES
+Windows 			-				-		NO[1]				NO[1]	YES
 
-Project files are Xcode/EIComponent.pbproj, MPW makefile EIComponent.make,
-EIComponent_cw7.mcp, EIComponent_cw8.mcp and EIComponentSample.dsw respectively.
+Respective project files are:
+	Xcode/EIComponent.pbproj       (Xcode < 2.4)
+	Xcode2.4/EIComponent.xcodeproj (Xcode 2.4)
+	EIComponent.make               (MPW)
+	EIComponent_cw7.mcp            (CW7)
+	EIComponent_cw8.mcp            (CW8)
+	EIComponentSample.dsw          (VS6)
+	Makefile                       (OS X command line)
 
 To build the component for Windows, the QuickTime Windows SDK is required:
-ftp://ftp.apple.com/developer/Development_Kits/QT6SDK_Win.hqx
-The Visual Studio project expects the QTDevWin folder to be installed in root of C:\
+	ftp://ftp.apple.com/developer/Development_Kits/QT6SDK_Win.hqx
+The VS project expects the SDK to be installed at C:\QTDevWin
 
-For more details, see Apple's ReadMe.rtf in the top level of this source distribution.
-
-MPW NOTE
---------
-Before attempting to build in MPW in OS X Classic, you must make sure the MacOS file type is 'TEXT' on all source files; in the 'eicomponent' trunk directory, execute this command:
-    setfile -t TEXT Å.[chr] :Å:Å.[chr] Å.make
-(that wildcard character is option-X).
---------
+For more details, see Apple's ReadMe.rtf in the top level of this
+source distribution.
 
 Questions and feedback about building this component to support@telegraphics.com.au
 
-
 Notes
-* Can build DLL but adding necessary resources needs Rez and RezWack functionality. Project is not complete.
+[1] Can build DLL but adding necessary resources needs Rez and RezWack
+    functionality. Project is not complete.
 
-** CW8 should be able to build the Mach-O plugin as in v1.3, but not tested with 1.4 project.
+[2] CW8 should be able to build the Mach-O plugin as in v1.3,
+    but not tested with 1.4 project.
 
-*** Carbon CFM versions build OK but do not seem to work yet. Project is not complete.
+[3] Carbon CFM versions build OK but do not seem to work yet.
+    Project is not complete.
+
+[4] Important note for MPW:
+	Before attempting to build in MPW in OS X Classic, you must make sure
+	the MacOS file type is 'TEXT' on all source files; in the 'eicomponent'
+	trunk directory, execute this command:
+		setfile -t TEXT Å.[chr] :Å:Å.[chr] Å.make
+	(that wildcard character is option-X).

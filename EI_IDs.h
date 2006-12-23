@@ -12,6 +12,7 @@ VERSION HISTORY
 27-Feb-2005: 1.4b6 - public source release
 28-Feb-2005: 1.4b7 - fix Manufacturer field in MovieExport - should be 'appl'
 21-Dec-2006: 1.5b1 - Universal (PPC/Intel) version
+23-Dec-2006: 1.5b2 - fix resource compilation ('thng' templates)
 */
 
 /*	Code resource IDs, when building for PPC (not CFM).
@@ -24,13 +25,13 @@ VERSION HISTORY
 #define kEI_ImageCodecID		0x0500
 
 /* software version */
-#define kEI_VersionShort		"1.5b1"
-#define kEI_VersionNum			1,0x50,beta,1 // used in 'vers' resource
-#define kEI_VersionHex			0x1501
+#define kEI_VersionShort		"1.5b2"
+#define kEI_VersionNum			1,0x50,beta,2 // used in 'vers' resource
+#define kEI_VersionHex			0x1502
 /* remember to update Xcode/Project Builder project settings, too! */
 
 /* formatted for Win32 VERSIONINFO resource */
-#define VI_VERS_NUM 1,5,0,1
+#define VI_VERS_NUM 1,5,0,2
 #ifdef _DEBUG
 	#define VI_FLAGS	VS_FF_PRERELEASE|VS_FF_DEBUG
 #else
@@ -71,8 +72,8 @@ VERSION HISTORY
 
 // standard Electric Image file extension is .img
 // (*NOT* .eim, that is reserved for Electric Image Modeller project files)
-#define kEI_ExtSig		'IMG '
+#define kEI_ExtSig		'IMG ' // must be upper case
 #define kEI_ExtSigLC	'img ' // lower case version
-#define kEI_ExtString	"img"
+#define kEI_ExtString	"img"  // comma delimited if more than one
 
 #define sigMoviePlayer	'TVOD' // from "FileTypesAndCreators.h"

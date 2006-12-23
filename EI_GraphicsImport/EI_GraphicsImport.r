@@ -67,6 +67,10 @@
 #if TARGET_REZ_CARBON_MACHO
     #include <Carbon/Carbon.r>
     #include <QuickTime/QuickTime.r>
+	#undef __CARBON_R__
+	#undef __CORESERVICES_R__
+	#undef __CARBONCORE_R__
+	#undef __COMPONENTS_R__
 #else
     #include "ConditionalMacros.r"
     #include "MacTypes.r"
@@ -74,6 +78,7 @@
     #include "QuickTimeComponents.r"
     #include "ImageCompression.r"
     #include "CodeFragments.r"
+	#undef __COMPONENTS_R__
 #endif
 
 #include "EI_IDs.h"

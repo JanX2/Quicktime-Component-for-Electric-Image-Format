@@ -66,12 +66,17 @@
 #if TARGET_REZ_CARBON_MACHO
     #include <Carbon/Carbon.r>
     #include <QuickTime/QuickTime.r>
+	#undef __CARBON_R__
+	#undef __CORESERVICES_R__
+	#undef __CARBONCORE_R__
+	#undef __COMPONENTS_R__
 #else
     #include "ConditionalMacros.r"
     #include "MacTypes.r"
     #include "Components.r"
     #include "ImageCodec.r"
     #include "CodeFragments.r"
+	#undef __COMPONENTS_R__
 #endif
 
 #include "EI_IDs.h"
@@ -175,8 +180,7 @@ resource 'thng' (kEI_ImageCodecID,"EI Image Codec",locked) {
 	'dlle', kEI_ImageCodecID,
 	platformWin32,
 #endif
-	},
-	'thnr', kEI_ImageCodecID			// Component public resource identifier
+	};
 };
 
 // Component Name
