@@ -214,4 +214,42 @@ typedef struct {
 	#pragma pack()
 #endif
 
+// Data structures
+#if PRAGMA_STRUCT_ALIGN
+	#pragma options align=packed
+#elif PRAGMA_STRUCT_PACKPUSH
+	#pragma pack(push, 1)
+#elif PRAGMA_STRUCT_PACK
+	#pragma pack(1)
+#endif
+
+typedef struct {
+	UInt8	red;
+	UInt8	green;
+	UInt8	blue;
+} PackedColor;
+
+typedef struct {
+	UInt8	opcode;
+	UInt8	pixelData[1];
+} RLE8Packet;
+
+typedef struct {
+	UInt8	opcode;
+	UInt16	pixelData[1];
+} RLE16Packet;
+
+typedef struct {
+	UInt8	opcode;
+	UInt32	pixelData[1];
+} RLE32Packet;
+
+#if PRAGMA_STRUCT_ALIGN
+	#pragma options align=reset
+#elif PRAGMA_STRUCT_PACKPUSH
+	#pragma pack(pop)
+#elif PRAGMA_STRUCT_PACK
+	#pragma pack()
+#endif
+
 #endif

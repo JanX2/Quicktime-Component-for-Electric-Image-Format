@@ -122,46 +122,7 @@ Movie Export Component Registration:
 
 #include "EI_IDs.h"
 #include "EI_Image.h"
-
-#pragma mark- Data Structures
-
-// Data structures
-#if PRAGMA_STRUCT_ALIGN
-	#pragma options align=packed
-#elif PRAGMA_STRUCT_PACKPUSH
-	#pragma pack(push, 1)
-#elif PRAGMA_STRUCT_PACK
-	#pragma pack(1)
-#endif
-
-typedef struct {
-	UInt8	red;
-	UInt8	green;
-	UInt8	blue;
-} PackedColor;
-
-typedef struct {
-	UInt8	opcode;
-	UInt8	pixelData[1];
-} RLE8Packet;
-
-typedef struct {
-	UInt8	opcode;
-	UInt16	pixelData[1];
-} RLE16Packet;
-
-typedef struct {
-	UInt8	opcode;
-	UInt32	pixelData[1];
-} RLE32Packet;
-
-#if PRAGMA_STRUCT_ALIGN
-	#pragma options align=reset
-#elif PRAGMA_STRUCT_PACKPUSH
-	#pragma pack(pop)
-#elif PRAGMA_STRUCT_PACK
-	#pragma pack()
-#endif
+#include "EI_RLE.h"
 
 typedef struct OutputTrackRecord {
 	long						trackID;
@@ -221,10 +182,6 @@ static OSErr WriteColorTable(CTabHandle cTabHdl, DataHandler dataH, UInt64 *offs
 static void  EmptyOutputTrack(OutputTrackPtr outputTrack);
 static OSErr ConfigureQuickTimeMovieExporter(EI_MovieExportGlobals store);
 static void  GetExportProperty(EI_MovieExportGlobals store);
-static OSErr CompressRLE(PixMapHandle pixMapHdl, Ptr compressBuffer, Size *compressBufferSizePtr);
-static void  CompressRLE8(UInt8 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr);
-static void  CompressRLE16(UInt16 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr);
-static void  CompressRLE32(UInt32 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr);
 
 #pragma mark- Component Dispatch
 
@@ -429,7 +386,7 @@ PASCAL_RTN ComponentResult EI_MovieExportFromProceduresToDataRef(EI_MovieExportG
 	// If we have an outputTrack added in the MovieExportAddDataSource call, write some frames	
 	if (outputTrack) {
 		// Since the property proc we call may be a proc returned from MovieExportNewGetDataAndPropertiesProcs,
-		// configure the QT movie exporter so that it's properties match what we have as our defaults.
+		// configure the QT movie exporter so that its properties match what we have as our defaults.
 		// Before we call the proc, we always init the video property to the current default. The proc can either
 		// be a client proc or one of the procs returned from MovieExportNewGetDataAndPropertiesProcs. In the
 		// first case, if the proc returns an error for a property selector, the default will be used. If the 
@@ -681,9 +638,6 @@ static PASCAL_RTN OSStatus SettingsWindowEventHandler(EventHandlerCallRef inHand
 		QuitAppModalLoopForWindow(window);
 		result = noErr;
 		break;
-
-	default:
-		break; 
 	}
 
 bail:
@@ -773,9 +727,7 @@ PASCAL_RTN ComponentResult EI_MovieExportDoUserDialog(EI_MovieExportGlobals stor
 	}
 
 	InstallWindowEventHandler(window, settingsWindowEventHandlerUPP, GetEventTypeCount(eventList), eventList, store, NULL); 
-	
 	ShowWindow(window);
-	
 	RunAppModalLoopForWindow(window);
 	
 	*canceledPtr = store->canceled;
@@ -1052,7 +1004,7 @@ bail:
 #pragma mark-
 
 // MovieExportGetFileNameExtension
-// 		Returns an OSType of the movie export components current file name extention. 
+// 		Returns an OSType of the movie export component's current file name extension. 
 PASCAL_RTN ComponentResult EI_MovieExportGetFileNameExtension(EI_MovieExportGlobals store, OSType *extension)
 {
 #pragma unused(store)
@@ -1095,7 +1047,7 @@ PASCAL_RTN ComponentResult EI_MovieExportGetSourceMediaType(EI_MovieExportGlobal
 #pragma mark-
 
 // WriteFrame
-//		This funtions calls the MovieExportGetDataProc to get some source data, sets up a decompression
+//		This function calls the MovieExportGetDataProc to get some source data, sets up a decompression
 // so we can get RGB pixels from the source then RLE compresses the source frame and writes it out.
 static OSErr WriteFrame(OutputTrackPtr outputTrack, DataHandler dataH, UInt64 *offsetPtr)
 {
@@ -1225,7 +1177,7 @@ static OSErr WriteFrame(OutputTrackPtr outputTrack, DataHandler dataH, UInt64 *o
 	if (err) goto bail;
 	
 	// Compress the pixels from the GWorld so we get our RLE compressed image data
-	err = CompressRLE(outputTrack->hPixMap, outputTrack->compressBuffer, &outputTrack->compressBufferSize);
+	err = CompressPixMapRLE(outputTrack->hPixMap, outputTrack->compressBuffer, &outputTrack->compressBufferSize);
 	if (err) goto bail;
 
 	// Write the image frame header
@@ -1368,7 +1320,7 @@ static void EmptyOutputTrack(OutputTrackPtr outputTrack)
 
 // ConfigureQuickTimeMovieExporter
 // 		Since the property proc we call may be a proc returned from MovieExportNewGetDataAndPropertiesProcs,
-// configure the QuickTime Movie Exporter so that it's properties match what we have as our defaults.	
+// configure the QuickTime Movie Exporter so that its properties match what we have as our defaults.	
 static OSErr ConfigureQuickTimeMovieExporter(EI_MovieExportGlobals store)
 {
 	SCTemporalSettings temporalSettings;
@@ -1433,304 +1385,6 @@ static void GetExportProperty(EI_MovieExportGlobals store)
 	
 	if (InvokeMovieExportGetPropertyUPP(outputTrack->refCon, outputTrack->trackID, movieExportHeight, &height, outputTrack->getPropertyProc) == noErr)
 		outputTrack->height = height;
-}
-
-#pragma mark-
-
-// CompressRLE
-//		Main compress routine, this function will call the appropriate RLE compression
-// method depending on the pixel depth of the source image.
-static OSErr CompressRLE(PixMapHandle pixMapHdl, Ptr compressBuffer, Size *compressBufferSizePtr)
-{
-	Handle hdl = NULL;
-	Ptr	   tempPtr = NULL,srcData;
-	Ptr	   pixBaseAddr = GetPixBaseAddr(pixMapHdl);
-	OSType pixelFormat = GETPIXMAPPIXELFORMAT(*pixMapHdl);
-	int		depth = QTGetPixelSize(pixelFormat);
-	long   rowBytes = QTGetPixMapHandleRowBytes(pixMapHdl);
-	int		width = (**pixMapHdl).bounds.right - (**pixMapHdl).bounds.left;
-	int		i, height = (**pixMapHdl).bounds.bottom - (**pixMapHdl).bounds.top;
-	Size   widthByteSize = (depth * (long)width + 7) >> 3;
-	OSErr  err = noErr;
-
-	// need to remove padding between rows?
-	if(widthByteSize != rowBytes){
-		// Make a temp buffer for the source
-		hdl = NewHandle(height * widthByteSize);
-		err = MemError();
-		if (err) goto bail;
-		
-		HLock(hdl);
-		
-		srcData = tempPtr = *hdl;
-		
-		// Get rid of row bytes padding
-		for (i = 0; i < height; i++) {
-			BlockMoveData(pixBaseAddr, tempPtr, widthByteSize);
-			tempPtr += widthByteSize;
-			pixBaseAddr += rowBytes;
-		}
-	}else
-		srcData = pixBaseAddr;
-
-	// Compress
-	switch (depth) {
-	case 1:
-	case 8:
-		CompressRLE8((UInt8*)srcData, height * widthByteSize, compressBuffer, compressBufferSizePtr);
-		break;
-	case 16:
-		CompressRLE16((UInt16*)srcData, height * (widthByteSize >> 1), compressBuffer, compressBufferSizePtr);
-		break;
-	case 32:
-		CompressRLE32((UInt32*)srcData, height * (widthByteSize >> 2), compressBuffer, compressBufferSizePtr);
-		break;
-	}
-	
-bail:
-	if (hdl)
-		DisposeHandle(hdl);
-
-	return err;
-}
-
-// CompressRLE8
-static void CompressRLE8(UInt8 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr)
-{
-	UInt8	   prevPixel, currentPixel;
-	UInt8	   sameCharCount;
-	UInt8	   diffCharCount;
-	RLE8Packet *packetPtr;
-		
-	// Initialize some stuff
-	sameCharCount = 1;
-	diffCharCount = 0;
-
-	packetPtr = (RLE8Packet *)compressBuffer;
-
-	prevPixel = *srcPtr++;
-
-	while (srcSize >= 2 ) {
-		currentPixel = *srcPtr++;
-		
-		if (prevPixel == currentPixel) {
-			// If diffCharCount > 0, we are holding pixels which should be read literally
-			if (diffCharCount > 0) {
-				packetPtr->opcode = 127 + diffCharCount;
-				
-				packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[diffCharCount]));
-				diffCharCount = 0;
-			}
-			
-			if (sameCharCount < 128) {
-				sameCharCount++;
-			} else {
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-				
-				packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[1]));
-				sameCharCount = 1;
-			}
-		} else {
-			// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-			if (sameCharCount > 1) {
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-								
-				packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[1]));
-				sameCharCount = 1;
-			} else {
-				packetPtr->pixelData[diffCharCount++] = prevPixel;
-				
-				if (diffCharCount == 128) {
-					packetPtr->opcode = 127 + diffCharCount;
-					
-					packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[diffCharCount]));
-					diffCharCount = 0;
-				}
-			}
-			
-			prevPixel = currentPixel;
-		}
-		
-		srcSize--;
-	}
-	
-	// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-	// If not so, we are holding pixels which should be read literally
-	if (sameCharCount > 1) {
-		packetPtr->opcode = sameCharCount - 1;
-		packetPtr->pixelData[0] = prevPixel;
-
-		packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[1]));
-	} else {
-		packetPtr->pixelData[diffCharCount++] = prevPixel;
-		packetPtr->opcode = 127 + diffCharCount;
-		
-		packetPtr = (RLE8Packet *)((Ptr)packetPtr + offsetof(RLE8Packet, pixelData[diffCharCount]));
-	}
-		
-	*compressBufferSizePtr = (Ptr)packetPtr - compressBuffer;
-}
-
-// CompressRLE16
-static void CompressRLE16(UInt16 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr)
-{
-	UInt16		prevPixel, currentPixel;
-	UInt8		sameCharCount;
-	UInt8		diffCharCount;
-	RLE16Packet	*packetPtr;
-		
-	// Initialize some stuff
-	sameCharCount = 1;
-	diffCharCount = 0;
-
-	packetPtr = (RLE16Packet *)compressBuffer;
-
-	prevPixel = *srcPtr++;
-
-	while (srcSize >= 2) {
-		currentPixel = *srcPtr++;
-		
-		if (prevPixel == currentPixel) {
-			// If diffCharCount > 0, we are holding pixels which should be read literally
-			if (diffCharCount > 0) {
-				packetPtr->opcode = 127 + diffCharCount;
-				
-				packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[diffCharCount]));
-				diffCharCount = 0;
-			}
-			
-			if (sameCharCount < 128) {
-				sameCharCount++;
-			} else {
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-
-				packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[1]));
-				sameCharCount = 1;
-			}
-		} else {
-			// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-			if (sameCharCount > 1)
-			{
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-
-				packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[1]));
-				sameCharCount = 1;
-			} else {
-				packetPtr->pixelData[diffCharCount++] = prevPixel;
-				
-				if (diffCharCount == 128)
-				{
-					packetPtr->opcode = 127 + diffCharCount;
-	
-					packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[diffCharCount]));
-					diffCharCount = 0;
-				}
-			}
-			
-			prevPixel = currentPixel;
-		}
-		
-		srcSize--;
-	}
-	
-	// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-	// If not so, we are holding pixels which should be read literally
-	if (sameCharCount > 1) {
-		packetPtr->opcode = sameCharCount - 1;
-		packetPtr->pixelData[0] = prevPixel;
-
-		packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[1]));
-	} else {
-		packetPtr->pixelData[diffCharCount++] = prevPixel;
-		packetPtr->opcode = 127 + diffCharCount;
-
-		packetPtr = (RLE16Packet *)((Ptr)packetPtr + offsetof(RLE16Packet, pixelData[diffCharCount]));
-	}
-		
-	*compressBufferSizePtr = (Ptr)packetPtr - compressBuffer;
-}
-
-// CompressRLE32
-static void CompressRLE32(UInt32 *srcPtr, Size srcSize, Ptr compressBuffer, Size *compressBufferSizePtr)
-{
-	UInt32		prevPixel, currentPixel;
-	UInt8		sameCharCount;
-	UInt8		diffCharCount;
-	RLE32Packet	*packetPtr;
-		
-	// Initialize some stuff
-	sameCharCount = 1;
-	diffCharCount = 0;
-
-	packetPtr = (RLE32Packet *)compressBuffer;
-
-	prevPixel = *srcPtr++;
-
-	while (srcSize >= 2) {
-		currentPixel = *srcPtr++;
-		
-		if (prevPixel == currentPixel) {
-			// If diffCharCount > 0, we are holding pixels which should be read literally
-			if (diffCharCount > 0) {
-				packetPtr->opcode = 127 + diffCharCount;
-
-				packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[diffCharCount]));
-				diffCharCount = 0;
-			}
-			
-			if (sameCharCount < 128) {
-				sameCharCount++;
-			} else {
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-
-				packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[1]));
-				sameCharCount = 1;
-			}
-		} else {
-			// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-			if (sameCharCount > 1) {
-				packetPtr->opcode = sameCharCount - 1;
-				packetPtr->pixelData[0] = prevPixel;
-
-				packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[1]));
-				sameCharCount = 1;
-			} else {
-				packetPtr->pixelData[diffCharCount++] = prevPixel;
-				
-				if (diffCharCount == 128) {
-					packetPtr->opcode = 127 + diffCharCount;
-
-					packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[diffCharCount]));
-					diffCharCount = 0;
-				}
-			}
-			
-			prevPixel = currentPixel;
-		}
-		
-		srcSize--;
-	}
-	
-	// If sameCharCount > 1, we are holding pixels which should be read repeatedly
-	// If not so, we are holding pixels which should be read literally
-	if (sameCharCount > 1) {
-		packetPtr->opcode = sameCharCount - 1;
-		packetPtr->pixelData[0] = prevPixel;
-
-		packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[1]));
-	} else {
-		packetPtr->pixelData[diffCharCount++] = prevPixel;
-		packetPtr->opcode = 127 + diffCharCount;
-		
-		packetPtr = (RLE32Packet *)((Ptr)packetPtr + offsetof(RLE32Packet, pixelData[diffCharCount]));
-	}
-		
-	*compressBufferSizePtr = (Ptr)packetPtr - compressBuffer;
 }
 
 #pragma mark -

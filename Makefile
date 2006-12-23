@@ -52,25 +52,26 @@ OBJ = \
 	EI_ImageCodec/EI_ImageCodec.o \
 	EI_MovieExport/EI_MovieExport.o \
 	EI_MovieImport/EI_MovieImport.o \
-	Utilities/EI_MakeImageDescription.o
+	Utilities/EI_MakeImageDescription.o \
+	Utilities/EI_RLE.o
 
-fat native : $(FATBIN)
+native fat : $(FATBIN)
 
-$(FATBIN) : ExportsPB.exp $(OBJ) $(BUNDLE) $(RSRC) $(BUNDLE)/Contents/Info.plist \
-		$(NIB)/classes.nib $(NIB)/info.nib $(NIB)/objects.xib
+$(FATBIN) : ExportsPB.exp $(OBJ) $(RSRC) $(BUNDLE)/Contents/Info.plist \
+			$(NIB)/classes.nib $(NIB)/info.nib $(NIB)/objects.xib
 	mkdir -p $(dir $@)
+	/Developer/Tools/SetFile -a B $(dir $@)
 	$(CC) -bundle -o $@ $(OBJ) $(LDFLAGS) -exported_symbols_list ExportsPB.exp \
 		-framework Carbon -framework CoreServices -framework QuickTime
 	ls -l $@
 	file $@
 
-$(NIB)/% : EI_MovieExport/EI_Export.nib/%
-	mkdir -p $(dir $@)
+$(NIB) : ; mkdir -p $@
+$(NIB)/% : EI_MovieExport/EI_Export.nib/% $(NIB)
 	cp -f $< $@
 
-$(BUNDLE) : ; mkdir $@ && /Developer/Tools/SetFile -a B $@
-
 $(BUNDLE)/Contents/Info.plist : Info.plist.in EI_IDs.h
+	mkdir -p $(dir $@)
 	V=`sed -n -E 's/^.*kEI_VersionShort[[:blank:]]+\"([^"]*)\"/\1/p' EI_IDs.h` ;\
 		sed -e s/VERSION_STR/$$V/ $< > $@
 
