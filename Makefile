@@ -5,6 +5,7 @@
 
 # Targets:
 #     'fat'    - build a Universal binary, both Intel and PPC archs
+#                (requires MacOSX10.4u.sdk)
 #     'native' - build for current arch only
 
 BUNDLE = EIComponentUB.component
@@ -17,7 +18,7 @@ fat : CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
 fat : LDFLAGS += -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
 
 CPPFLAGS = -I. -IEI_FormatIncludes -IUtilities \
-	-IEI_GraphicsImport -IEI_GraphicsExport -IEI_ImageCodec \
+	-IEI_GraphicsExport -IEI_GraphicsImport -IEI_ImageCodec \
 	-IEI_MovieImport -IEI_MovieExport
 CFLAGS += -O2 -Wall -Wextra -Wno-parentheses
 
@@ -39,8 +40,8 @@ native : REZFLAGS += -d TARGET_REZ_CARBON_MACHO=$$ARCHPPC \
 					 -d TARGET_REZ_CARBON_MACHO_X86=$$ARCHX86
 
 REZFILES = \
-	EI_GraphicsImport/EI_GraphicsImport.r \
 	EI_GraphicsExport/EI_GraphicsExport.r \
+	EI_GraphicsImport/EI_GraphicsImport.r \
 	EI_ImageCodec/EI_ImageCodec.r \
 	EI_MovieExport/EI_MovieExport.r \
 	EI_MovieExport/EI_MovieExportDialog.r \
