@@ -12,12 +12,13 @@ BUNDLE = EIComponentUB.component
 BUNDLEEXEC = ElectricImage
 FATBIN  = $(BUNDLE)/Contents/MacOS/$(BUNDLEEXEC)
 RSRC = $(BUNDLE)/Contents/Resources/$(BUNDLEEXEC).rsrc
+NIB = $(BUNDLE)/Contents/Resources/EI_Export.nib
 
 # See: http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html#//apple_ref/doc/uid/TP40002850-BAJCFEBA
 fat : CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
 fat : LDFLAGS += -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
 
-CPPFLAGS = -I. -IEI_FormatIncludes -IUtilities \
+CPPFLAGS = -DSTAND_ALONE -I. -IEI_FormatIncludes -IUtilities \
 	-IEI_GraphicsExport -IEI_GraphicsImport -IEI_ImageCodec \
 	-IEI_MovieImport -IEI_MovieExport
 CFLAGS += -O2 -Wall -Wextra -Wno-parentheses
@@ -43,7 +44,6 @@ REZFILES = \
 	EI_GraphicsImport/EI_GraphicsImport.r \
 	EI_ImageCodec/EI_ImageCodec.r \
 	EI_MovieExport/EI_MovieExport.r \
-	EI_MovieExport/EI_MovieExportDialog.r \
 	EI_MovieImport/EI_MovieImport.r
 
 OBJ = \
@@ -56,12 +56,17 @@ OBJ = \
 
 fat native : $(FATBIN)
 
-$(FATBIN) : ExportsPB.exp $(OBJ) $(BUNDLE) $(RSRC) $(BUNDLE)/Contents/Info.plist
+$(FATBIN) : ExportsPB.exp $(OBJ) $(BUNDLE) $(RSRC) $(BUNDLE)/Contents/Info.plist \
+		$(NIB)/classes.nib $(NIB)/info.nib $(NIB)/objects.xib
 	mkdir -p $(dir $@)
 	$(CC) -bundle -o $@ $(OBJ) $(LDFLAGS) -exported_symbols_list ExportsPB.exp \
 		-framework Carbon -framework CoreServices -framework QuickTime
 	ls -l $@
 	file $@
+
+$(NIB)/% : EI_MovieExport/EI_Export.nib/%
+	mkdir -p $(dir $@)
+	cp -f $< $@
 
 $(BUNDLE) : ; mkdir $@ && /Developer/Tools/SetFile -a B $@
 
