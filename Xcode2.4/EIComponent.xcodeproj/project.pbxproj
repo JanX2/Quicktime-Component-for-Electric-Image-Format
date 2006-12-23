@@ -111,7 +111,6 @@
 		DAEA999C0B3B422900CF21AB /* EI_ImageCodec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = EI_ImageCodec.c; path = ../EI_ImageCodec/EI_ImageCodec.c; sourceTree = SOURCE_ROOT; };
 		DAEA999D0B3B422900CF21AB /* EI_ImageCodec.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = EI_ImageCodec.r; path = ../EI_ImageCodec/EI_ImageCodec.r; sourceTree = SOURCE_ROOT; };
 		DAEA999E0B3B422900CF21AB /* EI_ImageCodecDispatch.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = EI_ImageCodecDispatch.h; path = ../EI_ImageCodec/EI_ImageCodecDispatch.h; sourceTree = SOURCE_ROOT; };
-		DAEA99BA0B3B42B700CF21AB /* EIComponentUB.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = EIComponentUB.r; path = ../PrefixIncludes/EIComponentUB.r; sourceTree = SOURCE_ROOT; };
 		F5D13F5D037DC13801000102 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -162,7 +161,6 @@
 		670471D200DAF25705000001 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DAEA99BA0B3B42B700CF21AB /* EIComponentUB.r */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
