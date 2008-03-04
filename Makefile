@@ -60,7 +60,7 @@ native fat : $(FATBIN)
 $(FATBIN) : ExportsPB.exp $(OBJ) $(RSRC) $(BUNDLE)/Contents/Info.plist \
 			$(NIB)/classes.nib $(NIB)/info.nib $(NIB)/objects.xib
 	mkdir -p $(dir $@)
-	/Developer/Tools/SetFile -a B $(dir $@)
+	/Developer/Tools/SetFile -a B $(BUNDLE)
 	$(CC) -bundle -o $@ $(OBJ) $(LDFLAGS) -exported_symbols_list ExportsPB.exp \
 		-framework Carbon -framework CoreServices -framework QuickTime
 	ls -l $@
